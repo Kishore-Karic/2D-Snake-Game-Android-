@@ -6,18 +6,25 @@ public class Snake : MonoBehaviour
 {
     private Vector3 direction;
     private float moveSpeed;
+    private float originalSpeed;
 
     [SerializeField] private ControlButton upButton, downButton, leftButton, rightButton;
 
-    bool[] directionArrays = new bool[4];
+    private bool[] directionArrays = new bool[4];
 
     private List<GameObject> snakeBody;
     [SerializeField] private GameObject snakeBodyPrefab;
 
+    [SerializeField] private GameObject powerUp;
+    private bool speed = false;
+    private bool shield = false;
+    private bool scoreBooster = false;
+
     private void Start()
     {
         Time.timeScale = 0.2f;
-        moveSpeed = 1f;
+        originalSpeed = 1f;
+        moveSpeed = originalSpeed;
         direction = new Vector3(moveSpeed, 0, 0);
         directionArrays[3] = true;
         snakeBody = new List<GameObject>();
@@ -124,5 +131,45 @@ public class Snake : MonoBehaviour
                 Shrink();
             }
         }
+
+        if (collision.CompareTag("PowerUp"))
+        {
+            int randomNumber = Random.Range(0, 3);
+
+            if (randomNumber == 0)
+            {
+                speed = true;
+                moveSpeed = 1.1f;
+            }
+            if (randomNumber == 1)
+            {
+                shield = true;
+            }
+            if (randomNumber == 2)
+            {
+                scoreBooster = true;
+            }
+            powerUp.SetActive(false);
+            const string powerUpTimer = "PowerUpTimer";
+            StartCoroutine(powerUpTimer);
+        }
+
+        if (collision.CompareTag("SnakeBody1"))
+        {
+            if (shield == false)
+            {
+                Time.timeScale = 0f;
+            }
+        }
+    }
+
+    IEnumerator PowerUpTimer()
+    {
+        yield return new WaitForSeconds(2.5f);
+        moveSpeed = originalSpeed;
+        speed = false;
+        shield = false;
+        scoreBooster = false;
+        powerUp.SetActive(true);
     }
 }
