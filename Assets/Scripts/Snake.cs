@@ -6,7 +6,6 @@ public class Snake : MonoBehaviour
 {
     private Vector3 direction;
     private float moveSpeed;
-    private float originalSpeed;
 
     [SerializeField] private ControlButton upButton, downButton, leftButton, rightButton;
 
@@ -27,9 +26,8 @@ public class Snake : MonoBehaviour
 
     private void Start()
     {
-        Time.timeScale = 0.2f;
-        originalSpeed = 1f;
-        moveSpeed = originalSpeed;
+        Time.timeScale = 0.15f;
+        moveSpeed = 1f;
         direction = new Vector3(moveSpeed, 0, 0);
         directionArrays[3] = true;
         snakeBody = new List<GameObject>();
@@ -139,6 +137,14 @@ public class Snake : MonoBehaviour
         if (collision.CompareTag("FoodGainer"))
         {
             Grow();
+            if (scoreBooster == true)
+            {
+                singlePlayerUIManager.IncreamentScore(30);
+            }
+            else
+            {
+                singlePlayerUIManager.IncreamentScore(10);
+            }
         }
 
         if (collision.CompareTag("FoodBurner"))
@@ -146,6 +152,7 @@ public class Snake : MonoBehaviour
             if (snakeBody.Count > 1)
             {
                 Shrink();
+                singlePlayerUIManager.DecreamentScore(10);
             }
             else
             {
@@ -166,7 +173,7 @@ public class Snake : MonoBehaviour
             if (randomNumber == 0)
             {
                 speed = true;
-                moveSpeed = 1.1f;
+                Time.timeScale = 0.2f;
             }
             if (randomNumber == 1)
             {
@@ -196,7 +203,7 @@ public class Snake : MonoBehaviour
     IEnumerator PowerUpTimer()
     {
         yield return new WaitForSeconds(2.5f);
-        moveSpeed = originalSpeed;
+        Time.timeScale = 0.15f;
         speed = false;
         shield = false;
         scoreBooster = false;
