@@ -20,6 +20,11 @@ public class Snake : MonoBehaviour
     private bool shield = false;
     private bool scoreBooster = false;
 
+    [SerializeField] private SinglePlayerUIManager singlePlayerUIManager;
+    [SerializeField] private GameObject gameOverUI;
+
+    [SerializeField] private GameObject PowerUpUI, ButtonUI;
+
     private void Start()
     {
         Time.timeScale = 0.2f;
@@ -29,6 +34,18 @@ public class Snake : MonoBehaviour
         directionArrays[3] = true;
         snakeBody = new List<GameObject>();
         snakeBody.Add(this.gameObject);
+
+        const string startingProtection = "StartingProtection";
+        StartCoroutine(startingProtection);
+    }
+
+    IEnumerator StartingProtection()
+    {
+        shield = true;
+        yield return new WaitForSeconds(0.5f);
+        shield = false;
+        singlePlayerUIManager.SetGameobjectActive(false);
+        powerUp.SetActive(true);
     }
 
     private void Update()
@@ -130,6 +147,16 @@ public class Snake : MonoBehaviour
             {
                 Shrink();
             }
+            else
+            {
+                if(shield == false)
+                {
+                    Time.timeScale = 0f;
+                    gameOverUI.SetActive(true);
+                    PowerUpUI.SetActive(false);
+                    ButtonUI.SetActive(false);
+                }
+            }
         }
 
         if (collision.CompareTag("PowerUp"))
@@ -159,6 +186,9 @@ public class Snake : MonoBehaviour
             if (shield == false)
             {
                 Time.timeScale = 0f;
+                gameOverUI.SetActive(true);
+                PowerUpUI.SetActive(false);
+                ButtonUI.SetActive(false);
             }
         }
     }
@@ -171,5 +201,20 @@ public class Snake : MonoBehaviour
         shield = false;
         scoreBooster = false;
         powerUp.SetActive(true);
+    }
+
+    public bool GetSpeedActive()
+    {
+        return speed;
+    }
+
+    public bool GetScoreActive()
+    {
+        return scoreBooster;
+    }
+
+    public bool GetShieldActive()
+    {
+        return shield;
     }
 }
