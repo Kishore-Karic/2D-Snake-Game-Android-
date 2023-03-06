@@ -1144,6 +1144,7 @@ MonoBehaviour:
   downButton: {fileID: 302271723}
   leftButton: {fileID: 2018853224}
   rightButton: {fileID: 1919435355}
+  snakeBodyPrefab: {fileID: 4160553872491563754, guid: cd1d2e8f881ac1d44b5e34ab98d3b870, type: 3}
 --- !u!61 &1688444090
 BoxCollider2D:
   m_ObjectHideFlags: 0
