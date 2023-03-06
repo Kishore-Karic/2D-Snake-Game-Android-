@@ -11,12 +11,17 @@ public class Snake : MonoBehaviour
 
     bool[] directionArrays = new bool[4];
 
+    private List<GameObject> snakeBody;
+    [SerializeField] private GameObject snakeBodyPrefab;
+
     private void Start()
     {
         Time.timeScale = 0.2f;
         moveSpeed = 1f;
         direction = new Vector3(moveSpeed, 0, 0);
         directionArrays[3] = true;
+        snakeBody = new List<GameObject>();
+        snakeBody.Add(this.gameObject);
     }
 
     private void Update()
@@ -27,6 +32,11 @@ public class Snake : MonoBehaviour
 
     private void FixedUpdate()
     {
+        for (int i = snakeBody.Count - 1; i > 0; i--)
+        {
+            snakeBody[i].transform.position = snakeBody[i - 1].transform.position;
+        }
+
         this.transform.position = new Vector3(Mathf.Round(this.transform.position.x) + direction.x, Mathf.Round(this.transform.position.y) + direction.y, 0f);
     }
 
@@ -83,6 +93,36 @@ public class Snake : MonoBehaviour
         if (this.transform.position.y < lowerLimit.y)
         {
             this.transform.position = new Vector3(transform.position.x, upperLimit.y, transform.position.z);
+        }
+    }
+
+    private void Grow()
+    {
+        GameObject segment = Instantiate(this.snakeBodyPrefab);
+        segment.transform.position = snakeBody[snakeBody.Count - 1].transform.position;
+
+        snakeBody.Add(segment);
+    }
+
+    private void Shrink()
+    {
+        Destroy(snakeBody[snakeBody.Count - 1]);
+        snakeBody.RemoveAt(snakeBody.Count - 1);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("FoodGainer"))
+        {
+            Grow();
+        }
+
+        if (collision.CompareTag("FoodBurner"))
+        {
+            if (snakeBody.Count > 1)
+            {
+                Shrink();
+            }
         }
     }
 }
