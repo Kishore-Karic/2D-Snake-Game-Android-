@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Snake1
+  - FoodGainer
+  - FoodBurner
+  - SnakeBody1
+  - PowerUp
   layers:
   - Default
   - TransparentFX
